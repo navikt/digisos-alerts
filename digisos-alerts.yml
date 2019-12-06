@@ -1,0 +1,12 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Alert"
+metadata:
+  name: digisos-alerts
+  labels:
+    team: digisos
+spec:
+  receivers:
+    slack:
+      channel: '#digisos-alerts'
+      #prependText: '<!here> | '
+  alerts:
