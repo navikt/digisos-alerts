@@ -11,7 +11,7 @@ spec:
       #prependText: '<!here> | '
   alerts:
     - alert: digisos-app-nede
-      expr: up{app=~"sosialhjelp-soknad-api", kubernetes_namespace=~"q.*", job="kubernetes-pods"} == 0
+      expr: sum(kube_deployment_status_replicas_unavailable{deployment="sosialhjelp-soknad-api", namespace=~"q.*"}) > 0
       for: 2m
       description: "{{ $labels.app }} er nede i {{ $labels.kubernetes_namespace }}"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
