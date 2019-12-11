@@ -10,3 +10,10 @@ spec:
       channel: '#digisos-alerts'
       #prependText: '<!here> | '
   alerts:
+    - alert: digisos-app-nede
+      expr: up{app=~"sosialhjelp-soknad-api|sosialhjelp-innsyn-api|sosialhjelp-login-api",job="kubernetes-pods"} == 0
+      for: 2m
+      description: "{{ $labels.app }} er nede i {{ $labels.kubernetes_namespace }}"
+      action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
+      sla: respond within 1h, during office hours
+      severity: danger
