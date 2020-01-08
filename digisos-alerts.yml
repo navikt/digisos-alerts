@@ -3,7 +3,7 @@ kind: "Alert"
 metadata:
   name: digisos-alerts
   labels:
-    team: digisos
+    team: teamdigisos
 spec:
   receivers:
     slack:
