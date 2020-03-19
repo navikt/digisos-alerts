@@ -17,8 +17,7 @@ Bruk `dev/digisos-alerts-dev.yaml` til å teste alerts i dev. Varsler dukker da 
 Deploy digisos-alerts til riktig cluster i preprod:
 `kubectl apply -f dev/digisos-alerts-dev.yml`
 
-Om alerten allerede finnes må den fjernes først:
-`kubectl delete alert digisos-alerts-dev.yml`
-
 ### Deploy prod:
-todo
+Deploy digisos-alerts til riktig cluster i prod:
+
+`kubectl apply -f digisos-alerts.yml`
