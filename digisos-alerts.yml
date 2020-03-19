@@ -11,7 +11,7 @@ spec:
       prependText: '<!here> | '
   alerts:
     - alert: digisos-app-nede
-      expr: up{app=~"sosialhjelp-soknad-api|sosialhjelp-innsyn-api|sosialhjelp-login-api|sosialhjelp-soknad|sosialhjelp-innsyn",job="kubernetes-pods"} == 0
+      expr: kube_deployment_spec_replicas{deployment=~"sosialhjelp-soknad-api|sosialhjelp-innsyn-api|sosialhjelp-login-api|sosialhjelp-soknad|sosialhjelp-innsyn"} - kube_deployment_status_replicas_available{deployment=~"sosialhjelp-soknad-api|sosialhjelp-innsyn-api|sosialhjelp-login-api|sosialhjelp-soknad|sosialhjelp-innsyn"} > 0
       for: 2m
       description: "{{ $labels.app }} er nede i {{ $labels.kubernetes_namespace }}"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
