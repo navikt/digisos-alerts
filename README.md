@@ -11,13 +11,10 @@ Vi er tilgjengelige i slack-kanalen #digisos
 ## Utvikling:
 Man kan bruke `https://prometheus.nais.preprod.local/graph` som hjelp til å teste queries (i image).
 
-Bruk `dev/digisos-alerts-<q0/q1>.yaml` til å teste alerts i q0 eller q1. Varsler dukker da opp i `#digisos-alerts-dev` på Slack
+Bruk `dev/digisos-alerts-<namespace>.yaml` til å teste alerts i q0 eller q1. Varsler dukker da opp i `#digisos-alerts-dev` på Slack
 
-### Deploy dev:
-Deploy digisos-alerts til riktig cluster i preprod:
-`kubectl apply -f dev/digisos-alerts-<q0/q1>.yml`
+### Apply til namespace i dev-sbs:
+`kubectl apply -f dev/digisos-alerts-<namespace>.yml -n <namespace>`
 
-### Deploy prod:
-Deploy digisos-alerts til riktig cluster i prod:
-
+### Apply prod-sbs:
 `kubectl apply -f digisos-alerts.yml`
