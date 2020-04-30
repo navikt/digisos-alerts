@@ -2,7 +2,7 @@ apiVersion: "nais.io/v1"
 kind: "Alert"
 metadata:
   name: digisos-alerts-dev
-  namespace: q0
+  namespace: default
   labels:
     team: teamdigisos
 spec:
