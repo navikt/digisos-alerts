@@ -1,4 +1,4 @@
-name: Deploy alerts in dev
+name: Deploy alerts
 on:
   push:
     branches:
@@ -15,3 +15,25 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-sbs
           RESOURCE: dev-alerts.yml
+
+  deploy-gcp-labs:
+    name: Deploy to dev-sbs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: gcp-labs
+          RESOURCE: dev-alerts.yml
+
+  deploy-prod-sbs:
+    name: Deploy to prod-sbs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-sbs
+          RESOURCE: prod-alerts.yml
