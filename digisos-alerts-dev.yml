@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1"
 kind: "Alert"
 metadata:
-  name: digisos-alerts-dev
+  name: digisos-alerts
   namespace: default
   labels:
     team: teamdigisos
@@ -9,7 +9,6 @@ spec:
   receivers:
     slack:
       channel: '#digisos-alerts-dev'
-      #prependText: '<!here> | '
   alerts:
     - alert: digisos-app-nede
       expr: kube_deployment_spec_replicas{app=~"sosialhjelp-soknad-api|sosialhjelp-innsyn-api|sosialhjelp-login-api|sosialhjelp-soknad|sosialhjelp-innsyn"} - kube_deployment_status_replicas_available{app=~"sosialhjelp-soknad-api|sosialhjelp-innsyn-api|sosialhjelp-login-api|sosialhjelp-soknad|sosialhjelp-innsyn"} > 0
