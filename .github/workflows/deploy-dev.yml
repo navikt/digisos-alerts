@@ -16,17 +16,6 @@ jobs:
           CLUSTER: dev-sbs
           RESOURCE: dev-alerts.yml
 
-  deploy-labs-gcp:
-    name: Deploy to labs-gcp
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: labs-gcp
-          RESOURCE: dev-alerts.yml
-
   deploy-prod-sbs:
     name: Deploy to prod-sbs
     runs-on: ubuntu-latest
