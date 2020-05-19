@@ -9,7 +9,7 @@ For mer informasjon om hvordan alerts fungerer, se:
 Vi er tilgjengelige i slack-kanalen #digisos
 
 ## Utvikling:
-Man kan bruke `https://prometheus.nais.preprod.local/graph` som hjelp til å teste queries (i image).
+Man kan bruke `https://prometheus.nais.preprod.local/graph` som hjelp til å teste queries (i image) eller bruke [port forwarding](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/) mot Prometheus i dev-sbs.
 
 Bruk `dev-alerts.yml` til å teste alerts i dev-sbs. Varslene vil gjelde for alle namespaces i dev-sbs, og de skal dukke opp i `#digisos-alerts-dev`.
 
