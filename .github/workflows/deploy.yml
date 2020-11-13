@@ -15,7 +15,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-sbs
           RESOURCE: dev-alerts.yml
-  
+
   deploy-dev-gcp-alerts:
     name: Deploy to dev-gcp
     runs-on: ubuntu-latest
@@ -36,12 +36,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-sbs
-          RESOURCE: prod-alerts.yml
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-sbs
-          RESOURCE: prod-alerts-teamdigisos.yml
+          RESOURCE: prod-sbs-alerts.yml
 
   deploy-prod-gcp-alerts:
     name: Deploy to prod-gcp
