@@ -13,7 +13,7 @@ spec:
     - alert: digisos-app-nede
       expr: kube_deployment_status_replicas_available{deployment=~"okonomi-gjeldsradgivning-veiviser"} == 0
       for: 2m
-      description: "{{ $labels.deployment }} er nede i {{ $labels.namespace }}"
+      description: "{{ $labels.deployment }} er nede i prod-gcp"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
@@ -27,6 +27,6 @@ spec:
     - alert: høy feilrate i logger
       expr: (600 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app=~"okonomi-gjeldsradgivning-veiviser",log_level=~"Warning|Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="okonomi-gjeldsradgivning-veiviser"}[3m]))) > 10
       for: 10m
-      action: "Sjekk loggene til app {{ $labels.log_app }} i namespace {{ $labels.log_namespace }}, for å se hvorfor det er så mye feil"
-      description: "Høy feilrate i logger på app {{ $labels.log_app }} i namespace {{ $labels.log_namespace }}"
+      action: "Sjekk loggene til app {{ $labels.log_app }} for å se hvorfor det er så mye feil"
+      description: "Høy feilrate i logger på app {{ $labels.log_app }}"
 
