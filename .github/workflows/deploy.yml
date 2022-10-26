@@ -27,17 +27,6 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: dev-gcp-alerts.yml
 
-  deploy-prod-sbs:
-    name: Deploy to prod-sbs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-sbs
-          RESOURCE: prod-sbs-alerts.yml
-
   deploy-prod-fss:
     name: Deploy to prod-fss
     runs-on: ubuntu-latest
@@ -48,14 +37,3 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss
           RESOURCE: prod-fss-alerts.yml
-
-  deploy-prod-gcp-alerts:
-    name: Deploy to prod-gcp
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-gcp
-          RESOURCE: prod-gcp-alerts.yml

@@ -11,13 +11,13 @@ Vi er tilgjengelige i slack-kanalen #team_digisos
 ## Utvikling:
 Man kan bruke `https://prometheus.nais.preprod.local/graph` som hjelp til å teste queries (i image) eller bruke [port forwarding](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/) mot Prometheus i dev.
 
-Bruk `dev-<sbs/fss/gcp>-alerts.yml` til å teste alerts i et dev-cluster. De vil da alerts dukke opp i `#digisos-alerts-dev`.
+Bruk `dev-<fss/gcp>-alerts.yml` til å teste alerts i et dev-cluster. De vil da alerts dukke opp i `#digisos-alerts-dev`.
 
 ## Autodeploy
 Det er satt opp autodeploy av alle alerts ved push på master.
 
 ### Manuell apply i dev:
-`kubectl apply -f dev-<sbs/fss/gcp>-alerts.yml`
+`kubectl apply -f dev-<fss/gcp>-alerts.yml`
 
 ### Manuell apply i prod:
-`kubectl apply -f prod-<sbs/fss/gcp>-alerts.yml`
+`kubectl apply -f prod-<fss/gcp>-alerts.yml`
