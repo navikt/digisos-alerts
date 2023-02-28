@@ -14,7 +14,7 @@ spec:
           for: 2m
           annotations:
             consequence: Applikasjon er utilgjengelig
-            action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
+            action: "Se `kubectl describe pod {{ $labels.pod }}` for events, og `kubectl logs {{ $labels.pod }}` for logger"
             summary: "{{ $labels.deployment }} er nede i dev-gcp"
           labels:
             namespace: teamdigisos

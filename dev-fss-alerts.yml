@@ -14,7 +14,7 @@ spec:
           for: 2m
           annotations:
             consequence: Applikasjon er utilgjengelig
-            action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
+            action: "Se `kubectl describe pod {{ $labels.pod }}` for events, og `kubectl logs {{ $labels.pod }}` for logger"
             summary: "{{ $labels.deployment }} er nede i dev-fss"
           labels:
             namespace: teamdigisos
@@ -39,7 +39,7 @@ spec:
           labels:
             namespace: teamdigisos
         - alert: feil i selftest
-          expr: selftests_aggregate_result_status{kubernetes_namespace="teamdigisos"} == 1
+          expr: selftests_aggregate_result_status{namespace="teamdigisos"} == 1
           for: 1m
           annotation:
             consequence: Applikasjon kan være ustabil
