@@ -1,36 +1,49 @@
-apiVersion: "nais.io/v1"
-kind: "Alert"
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
 metadata:
   name: digisos-alerts
   namespace: teamdigisos
   labels:
     team: teamdigisos
 spec:
-  receivers:
-    slack:
-      channel: '#digisos-alerts-dev'
-  alerts:
-    - alert: digisos-app-nede
-      expr: kube_deployment_status_replicas_available{app=~"sosialhjelp-modia-api|sosialhjelp-modia|sosialhjelp-soknad-api|sosialhjelp-innsyn-api"} == 0
-      for: 2m
-      description: "{{ $labels.deployment }} er nede i dev-fss"
-      action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
-      sla: respond within 1h, during office hours
-      severity: danger
-    - alert: digisos-app-kontinuerlig-restart
-      expr: sum(increase(kube_pod_container_status_restarts_total{container=~"sosialhjelp-modia-api|sosialhjelp-modia|sosialhjelp-soknad-api|sosialhjelp-innsyn-api"}[30m])) by (container) > 2
-      for: 5m
-      description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
-      action: "Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs {{ $labels.container }}` for logger"
-      sla: respond within 1h, during office hours
-      severity: danger
-    - alert: høy feilrate i logger
-      expr: (600 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app=~"sosialhjelp-modia-api|sosialhjelp-soknad-api|sosialhjelp-innsyn-api",log_level=~"Error"}[10m]))) > 10
-      for: 3m
-      action: "Sjekk loggene til app {{ $labels.log_app }} for å se hvorfor det er så mye feil"
-      description: "Høy feilrate i {{ $labels.log_app }}"
-    - alert: feil i selftest
-      expr: selftests_aggregate_result_status{kubernetes_namespace="teamdigisos"} == 1
-      for: 1m
-      action: "Sjekk {{ $labels.app }} i dev-fss sin selftest for å se hva som er galt"
-      description: "Feil i selftest - {{ $labels.app }} i dev-fss"
+  groups:
+    - name: digisos-dev-fss-alerts
+      rules:
+        - alert: digisos-app-nede
+          expr: kube_deployment_status_replicas_available{app=~"sosialhjelp-modia-api|sosialhjelp-modia|sosialhjelp-soknad-api|sosialhjelp-innsyn-api"} == 0
+          for: 2m
+          annotations:
+            consequence: Applikasjon er utilgjengelig
+            action: "Se `kubectl describe pod {{ $labels.pod }}` for events, og `kubectl logs {{ $labels.pod }}` for logger"
+            summary: "{{ $labels.deployment }} er nede i dev-fss"
+          labels:
+            namespace: teamdigisos
+            severity: danger
+        - alert: digisos-app-kontinuerlig-restart
+          expr: sum(increase(kube_pod_container_status_restarts_total{container=~"sosialhjelp-modia-api|sosialhjelp-modia|sosialhjelp-soknad-api|sosialhjelp-innsyn-api"}[30m])) by (container) > 2
+          for: 5m
+          annotations:
+            consequence: Applikasjon kan være ustabil
+            action: "Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs {{ $labels.container }}` for logger"
+            summary: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
+          labels:
+            namespace: teamdigisos
+            severity: danger
+        - alert: høy feilrate i logger
+          expr: (600 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app=~"sosialhjelp-modia-api|sosialhjelp-soknad-api|sosialhjelp-innsyn-api",log_level=~"Error"}[10m]))) > 10
+          for: 3m
+          annotations:
+            consequence: Applikasjon kan være ustabil
+            action: "Sjekk loggene til app {{ $labels.log_app }} for å se hvorfor det er så mye feil"
+            summary: "Høy feilrate i {{ $labels.log_app }}"
+          labels:
+            namespace: teamdigisos
+        - alert: feil i selftest
+          expr: selftests_aggregate_result_status{namespace="teamdigisos"} == 1
+          for: 1m
+          annotations:
+            consequence: Applikasjon kan være ustabil
+            action: "Sjekk {{ $labels.app }} i dev-fss sin selftest for å se hva som er galt"
+            summary: "Feil i selftest - {{ $labels.app }} i dev-fss"
+          labels:
+            namespace: teamdigisos
