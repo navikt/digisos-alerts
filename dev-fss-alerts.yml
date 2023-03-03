@@ -10,7 +10,7 @@ spec:
     - name: digisos-dev-fss-alerts
       rules:
         - alert: digisos-app-nede
-          expr: kube_deployment_status_replicas_available{app=~"sosialhjelp-modia-api|sosialhjelp-modia|sosialhjelp-soknad-api|sosialhjelp-innsyn-api"} == 0
+          expr: kube_deployment_status_replicas_available{namespace="teamdigisos"} == 0
           for: 2m
           annotations:
             consequence: Applikasjon er utilgjengelig
@@ -20,7 +20,7 @@ spec:
             namespace: teamdigisos
             severity: danger
         - alert: digisos-app-kontinuerlig-restart
-          expr: sum(increase(kube_pod_container_status_restarts_total{container=~"sosialhjelp-modia-api|sosialhjelp-modia|sosialhjelp-soknad-api|sosialhjelp-innsyn-api"}[30m])) by (container) > 2
+          expr: sum(increase(kube_pod_container_status_restarts_total{namespace="teamdigisos"}[30m])) by (container) > 2
           for: 5m
           annotations:
             consequence: Applikasjon kan være ustabil
@@ -30,7 +30,7 @@ spec:
             namespace: teamdigisos
             severity: danger
         - alert: høy feilrate i logger
-          expr: (600 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app=~"sosialhjelp-modia-api|sosialhjelp-soknad-api|sosialhjelp-innsyn-api",log_level=~"Error"}[10m]))) > 10
+          expr: (600 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_namespace="teamdigisos",log_level=~"Error"}[10m]))) > 10
           for: 3m
           annotations:
             consequence: Applikasjon kan være ustabil
