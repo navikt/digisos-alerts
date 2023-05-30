@@ -30,7 +30,7 @@ spec:
             namespace: teamdigisos
             severity: danger
         - alert: høy feilrate i logger
-          expr: (100 * sum by (app, namespace) (rate(log_messages_error{log_app=~"sosialhjelp-soknad-api-dev|sosialhjelp-soknad-dev|sosialhjelp-login-api-dev|sosialhjelp-innsyn-api-dev|sosialhjelp-innsyn-dev", level=~"Error"}[10m]))) > 10
+          expr: (100 * sum by (app, namespace) (rate(log_messages_error{app=~"sosialhjelp-soknad-api-dev|sosialhjelp-soknad-dev|sosialhjelp-login-api-dev|sosialhjelp-innsyn-api-dev|sosialhjelp-innsyn-dev", level=~"Error"}[10m]))) > 10
           for: 3m
           annotations:
             consequence: Applikasjon kan være ustabil
