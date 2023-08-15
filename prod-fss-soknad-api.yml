@@ -20,6 +20,7 @@ spec:
             namespace: teamdigisos
             special_type_to_use_in_alertmanager_config: digisos-soknad-api-errors
             alert_type: custom
+            severity: critical
 
 ---
 apiVersion: monitoring.coreos.com/v1alpha1
