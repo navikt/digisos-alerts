@@ -14,8 +14,8 @@ spec:
           for: 3m
           annotations:
             consequence: Applikasjon kan være ustabil
-            action: "Sjekk loggene til app {{ $labels.app }} for å se hvorfor det er så mye feil"
-            summary: "Høy feilrate i {{ $labels.app }}"
+            action: "Sjekk loggene til sosialhjelp-soknad-api for å se hvorfor det er så mye feil"
+            summary: "Høy feilrate i sosialhjelp-soknad-api"
           labels:
             namespace: teamdigisos
             special_type_to_use_in_alertmanager_config: digisos-soknad-api-errors
@@ -37,21 +37,13 @@ spec:
             key: apiUrl
             name: slack-webhook
           channel: "digisos-soknad-api-error-alerts"
-          iconEmoji: ":test:"
-          username: "Testing Alert"
+          iconEmoji: ":digisos_nathalie_gal:"
+          username: "Søknad-api alerts"
           sendResolved: true
           httpConfig:
             proxyURL: http://webproxy.nais:8088
-          title: |-
-            [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
-          text: >-
-            {{ range .Alerts -}}
-            *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
-            *Description:* {{ .Annotations.description }}
-            *Details:*
-            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
-            {{ end }}
-            {{ end }}
+          text: '{{ template "slack.text" . }}'
+          title: '{{ template "slack.title" . }}'
           color: |-
             {{ if eq .Status "firing" -}}
               {{ if eq .CommonLabels.severity "warning" -}}
