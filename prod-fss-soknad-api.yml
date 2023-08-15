@@ -1,0 +1,80 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: digisos-soknad-api-error-alerts
+  namespace: teamdigisos
+  labels:
+    team: teamdigisos
+spec:
+  groups:
+    - name: digisos-prod-fss-alerts
+      rules:
+        - alert: høy feilrate i logger
+          expr: (600 * sum by (app, namespace) (rate(log_messages_errors{app=~"sosialhjelp-soknad-api",level="Error"}[10m]))) > 10
+          for: 3m
+          annotations:
+            consequence: Applikasjon kan være ustabil
+            action: "Sjekk loggene til sosialhjelp-soknad-api for å se hvorfor det er så mye feil"
+            summary: "Høy feilrate i sosialhjelp-soknad-api"
+          labels:
+            namespace: teamdigisos
+            special_type_to_use_in_alertmanager_config: digisos-soknad-api-errors
+            alert_type: custom
+            severity: critical
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: digisos-soknad-api-error-alerts
+  namespace: teamdigisos
+  labels:
+    alertmanagerConfig: digisos-soknad-api-error-alerts
+spec:
+  receivers:
+    - name: digisos-soknad-api-error-alerts-receiver
+      slackConfigs:
+        - apiURL:
+            key: apiUrl
+            name: slack-webhook
+          channel: "digisos-soknad-api-error-alerts"
+          iconEmoji: ":digisos_nathalie_gal:"
+          username: "Søknad-api alerts"
+          sendResolved: true
+          httpConfig:
+            proxyURL: http://webproxy.nais:8088
+          text: '{{ template "slack.text" . }}'
+          title: '{{ template "slack.title" . }}'
+          color: |-
+            {{ if eq .Status "firing" -}}
+              {{ if eq .CommonLabels.severity "warning" -}}
+                warning
+              {{- else if eq .CommonLabels.severity "fatal" -}}
+                #611f69
+              {{- else if eq .CommonLabels.severity "critical" -}}
+                #611f69
+              {{- else if eq .CommonLabels.severity "danger" -}}
+                danger
+              {{- else if eq .CommonLabels.severity "error" -}}
+                danger
+              {{- else if eq .CommonLabels.severity "notice" -}}
+                good
+              {{- else if eq .CommonLabels.severity "info" -}}
+                #36c5f0
+              {{- else -}}
+                .CommonLabels.severity
+              {{- end -}}
+            {{ else -}}
+            good
+            {{- end }}
+  route:
+    groupBy:
+      - alertname
+    matchers:
+      - name: "special_type_to_use_in_alertmanager_config"
+        matchType: "="
+        value: "digisos-soknad-api-errors"
+    groupInterval: 10s
+    groupWait: 5s
+    receiver: digisos-soknad-api-error-alerts-receiver
+    repeatInterval: 2m
