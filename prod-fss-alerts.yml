@@ -46,3 +46,9 @@ spec:
             summary: "Feil i selftest - {{ $labels.app }} i prod-fss"
           labels:
             namespace: teamdigisos
+        - alert: mistenkelig få requests mot soknad-api
+          expr: sum(rate(http_server_requests_seconds_count{app="sosialhjelp-soknad-api"}[10m])) < 1.0
+          for: 5m
+          annotations:
+              action: "Sjekk om sosialhjelp-soknad og/eller login-service er i drift"
+              summary: "Færre enn 0.1 request/min mottatt av soknad-api i prod-fss"
