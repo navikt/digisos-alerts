@@ -46,3 +46,9 @@ spec:
             summary: "Feil i selftest - {{ $labels.app }} i prod-fss"
           labels:
             namespace: teamdigisos
+        - alert: drastisk nedgang i bruk av soknad-api
+          expr: 1 / (sum(predict_linear(http_server_requests_seconds_count{app="sosialhjelp-soknad-api", uri=~"/soknader.*"}[20m], 1800)) / sum(avg_over_time(http_server_requests_seconds_count{app="sosialhjelp-soknad-api"}[30m]))) > 60.0
+          for: 5m
+          annotations:
+              action: "Sjekk om sosialhjelp-soknad og/eller login-service er i drift"
+              summary: "Drastisk fall i requests mot soknad-api /soknader"
