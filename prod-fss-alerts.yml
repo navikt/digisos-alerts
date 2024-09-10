@@ -46,3 +46,30 @@ spec:
             summary: "Feil i selftest - {{ $labels.app }} i prod-fss"
           labels:
             namespace: teamdigisos
+        - alert: drastisk nedgang i requests til soknad-api
+          expr: |
+            1 / (
+              sum(predict_linear(
+                http_server_requests_seconds_count{
+                  app="sosialhjelp-soknad-api", 
+                  uri=~"/soknader.*"
+                }[20m], 1800)
+              ) / sum(
+                avg_over_time(
+                  http_server_requests_seconds_count{
+                    app="sosialhjelp-soknad-api"
+                  }[30m]
+                )
+              )
+            ) > 60.0
+          for: 1m
+          annotations:
+              summary: "API-kall mot soknad-api synker svært raskt"
+              action: "Sjekk om sosialhjelp-soknad og/eller login-service er i drift"
+              consequence: "Det kan være problemer med sosialhjelp-soknad frontend, sjekk https://nav.no/sosialhjelp/soknad"
+              message: |
+                Forespørsler mot soknad-api synker svært raskt.
+                Dette varselet sammenligner forventet trafikk fra trenden for de siste 20 minutter med faktisk trafikk de siste 30 minuttene.
+                Varselet utløses hvis den forutsagte trafikken er mindre enn 1/60 av gjennomsnittet for siste halvtime.
+          labels:
+            namespace: teamdigisos
