@@ -52,7 +52,7 @@ spec:
                 http_server_requests_seconds_count{
                   app="sosialhjelp-soknad-api",
                   uri=~"/soknader.*"
-                }[10m], 1800)) /
+                }[10m], 1800))
               / sum(avg_over_time(
                 http_server_requests_seconds_count{
                   app="sosialhjelp-soknad-api"
@@ -66,7 +66,7 @@ spec:
               consequence: "Det kan være problemer med sosialhjelp-soknad frontend, sjekk https://nav.no/sosialhjelp/soknad"
               message: |
                 Forespørsler mot soknad-api synker svært raskt.
-                Dette varselet sammenligner forventet trafikk fra trenden for de siste 20 minutter med faktisk trafikk for en time siden.
-                Varselet utløses hvis den forutsagte trafikken er mindre enn 1/60 av gjennomsnittet for siste halvtime.
+                Dette varselet sammenligner forventet trafikk fra trenden for de siste 10 minutter med faktisk trafikk for en time siden.
+                Varselet utløses hvis den forutsagte trafikken er mindre enn 1/60 av gjennomsnittet for tidsrommet mellom 30 til 60 min siden.
           labels:
             namespace: teamdigisos
