@@ -9,16 +9,50 @@ spec:
   groups:
     - name: digisos-prod-fss-alerts
       rules:
-        - alert: digisos-app-nede
-          expr: kube_deployment_status_replicas_available{app=~"sosialhjelp-modia-api|sosialhjelp-modia|sosialhjelp-soknad-api|sosialhjelp-innsyn-api"} == 0
+        - alert: sosialhjelp-modia-api-nede
+          expr: kube_deployment_status_replicas_available{app="sosialhjelp-modia-api"} == 0
           for: 2m
           annotations:
-            consequence: Applikasjon er utilgjengelig
+            consequence: Applikasjon sosialhjelp-modia-api er utilgjengelig
             action: "Se `kubectl describe pod {{ $labels.pod }}` for events, og `kubectl logs {{ $labels.pod }}` for logger"
-            summary: "{{ $labels.deployment }} er nede i prod-fss"
+            summary: "sosialhjelp-modia-api er nede i prod-fss"
           labels:
             namespace: teamdigisos
             severity: danger
+
+        - alert: sosialhjelp-modia-nede
+          expr: kube_deployment_status_replicas_available{app="sosialhjelp-modia"} == 0
+          for: 2m
+          annotations:
+            consequence: Applikasjon sosialhjelp-modia er utilgjengelig
+            action: "Se `kubectl describe pod {{ $labels.pod }}` for events, og `kubectl logs {{ $labels.pod }}` for logger"
+            summary: "sosialhjelp-modia er nede i prod-fss"
+          labels:
+            namespace: teamdigisos
+            severity: danger
+
+        - alert: sosialhjelp-soknad-api-nede
+          expr: kube_deployment_status_replicas_available{app="sosialhjelp-soknad-api"} == 0
+          for: 2m
+          annotations:
+            consequence: Applikasjon sosialhjelp-soknad-api er utilgjengelig
+            action: "Se `kubectl describe pod {{ $labels.pod }}` for events, og `kubectl logs {{ $labels.pod }}` for logger"
+            summary: "sosialhjelp-soknad-api er nede i prod-fss"
+          labels:
+            namespace: teamdigisos
+            severity: danger
+
+        - alert: sosialhjelp-innsyn-api-nede
+          expr: kube_deployment_status_replicas_available{app="sosialhjelp-innsyn-api"} == 0
+          for: 2m
+          annotations:
+            consequence: Applikasjon sosialhjelp-innsyn-api er utilgjengelig
+            action: "Se `kubectl describe pod {{ $labels.pod }}` for events, og `kubectl logs {{ $labels.pod }}` for logger"
+            summary: "sosialhjelp-innsyn-api er nede i prod-fss"
+          labels:
+            namespace: teamdigisos
+            severity: danger
+
         - alert: digisos-app-kontinuerlig-restart
           expr: sum(increase(kube_pod_container_status_restarts_total{container=~"sosialhjelp-modia-api|sosialhjelp-modia|sosialhjelp-soknad-api|sosialhjelp-innsyn-api"}[30m])) by (container) > 2
           for: 5m
@@ -29,6 +63,7 @@ spec:
           labels:
             namespace: teamdigisos
             severity: danger
+
         - alert: høy feilrate i logger
           expr: (600 * sum by (app, namespace) (rate(log_messages_errors{app=~"sosialhjelp-modia-api|sosialhjelp-soknad-api|sosialhjelp-innsyn-api",level="Error"}[10m]))) > 10
           for: 3m
@@ -38,6 +73,7 @@ spec:
             summary: "Høy feilrate i {{ $labels.app }}"
           labels:
             namespace: teamdigisos
+
         - alert: feil i selftest
           expr: selftests_aggregate_result_status{namespace="teamdigisos"} == 1
           for: 1m
@@ -46,6 +82,7 @@ spec:
             summary: "Feil i selftest - {{ $labels.app }} i prod-fss"
           labels:
             namespace: teamdigisos
+
         - alert: drastisk nedgang i requests til soknad-api
           expr: |
             1 / sum(predict_linear(
