@@ -7,6 +7,38 @@ metadata:
     team: teamdigisos
 spec:
   groups:
+    - name: digisos-soknad-api-alerts
+      rules:
+        - alert: soknad-api-low-creation-rate
+          expr: |-
+            (
+              sum(increase(http_server_requests_seconds_count{status="200", app="sosialhjelp-soknad-api", uri="/soknader/opprettSoknad"}[5m])) < 1
+              and
+              (hour() >= 9 and hour() < 21)
+            ) or (
+              sum(increase(http_server_requests_seconds_count{status="200", app="sosialhjelp-soknad-api", uri="/soknader/opprettSoknad"}[30m])) < 1
+            )
+          annotations:
+            consequence: Brukere kan være forhindret fra å opprette søknader
+          labels:
+            severity: danger
+            team: teamdigisos
+
+        - alert: soknad-api-low-submission-rate
+          expr: |-
+            (
+              sum(increase(http_server_requests_seconds_count{status="200", app="sosialhjelp-soknad-api", uri="/soknader/{behandlingsId}/actions/send"}[5m])) < 1
+              and
+              (hour() >= 9 and hour() < 21)
+            ) or (
+              sum(increase(http_server_requests_seconds_count{status="200", app="sosialhjelp-soknad-api", uri="/soknader/{behandlingsId}/actions/send"}[30m])) < 1
+            )
+          annotations:
+            consequence: Brukere kan være forhindret fra å sende søknader
+          labels:
+            severity: danger
+            team: teamdigisos
+
     - name: digisos-prod-gcp-alerts
       rules:
         - alert: digisos-app-nede
