@@ -38,6 +38,16 @@ spec:
           labels:
             severity: danger
             team: teamdigisos
+    - name: digisos-innsyn-api-alerts
+      rules:
+        - alert: innsyn-api-low-ettersendelse-rate
+          expr: |-
+            sum(increase(http_server_requests_seconds_count{app="sosialhjelp-innsyn-api", namespace="teamdigisos", status=~"200|202|204|302", method="POST", uri="/api/v1/innsyn/{fiksDigisosId}/vedlegg"}[30m])) < 1
+          annotations:
+            consequence: Brukere kan være forhindret fra å ettersende vedlegg
+          labels:
+            severity: danger
+            team: teamdigisos
 
     - name: digisos-prod-gcp-alerts
       rules:
