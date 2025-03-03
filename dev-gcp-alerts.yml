@@ -36,5 +36,5 @@ spec:
             consequence: Applikasjon kan være ustabil
             action: "Sjekk loggene til app {{ $labels.app }} for å se hvorfor det er så mye feil"
             summary: "Høy feilrate i logger på app {{ $labels.app }}"
-            labels:
-              namespace: teamdigisos
+          labels:
+            namespace: teamdigisos
