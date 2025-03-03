@@ -7,7 +7,7 @@ metadata:
     team: teamdigisos
 spec:
   groups:
-    - name: digisos-dev-gcp-alerts
+    - name: digisos-prod-gcp-alerts
       rules:
         - alert: digisos-app-nede
           expr: kube_deployment_status_replicas_available{app=~"sosialhjelp-avtaler-api|sosialhjelp-avtaler|sosialhjelp-soknad-api|sosialhjelp-innsyn|sosialhjelp-innsyn-api"} == 0
