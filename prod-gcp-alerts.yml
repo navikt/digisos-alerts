@@ -41,13 +41,21 @@ spec:
 
         - alert: soknad-api-response-time-high
           expr: |-
-            sum(rate(http_client_requests_seconds_sum{app="sosialhjelp-soknad-api"}[5m])) /
-            sum(rate(http_client_requests_seconds_count{app="sosialhjelp-soknad-api"}[5m]))
+            sum(rate(http_server_requests_seconds_sum{app="sosialhjelp-soknad-api", uri!~"/internal/isAlive|/internal/isReady|/internal/prometheus|^/swagger.*|^root|^/webjars/.*", method="GET"}[5m]))
+            / sum(rate(http_server_requests_seconds_count{app="sosialhjelp-soknad-api", uri!~"|/internal/isAlive|/internal/isReady|/internal/prometheus|^/swagger.*|^root|^/webjars/.*", method="GET"}[5m])) > 2
           annotations:
             consequence: Brukere kan oppleve treg respons
           labels:
             severity: warning
             team: teamdigisos
+
+        - alert: soknad-api-memory-usage-high
+          expr: container_memory_working_set_bytes{container="sosialhjelp-soknad-api", namespace="teamdigisos"} > 3.5 * 1024 * 1024 * 1024
+          annotations:
+              consequence: Applikasjonen kan bli treg eller utilgjengelig
+          labels:
+              severity: warning
+              team: teamdigisos
 
     - name: digisos-innsyn-api-alerts
       rules:
@@ -62,13 +70,23 @@ spec:
 
         - alert: innsyn-api-response-time-high
           expr: |-
-            sum(rate(http_client_requests_seconds_sum{app="sosialhjelp-innsyn-api"}[5m])) /
-            sum(rate(http_client_requests_seconds_count{app="sosialhjelp-innsyn-api"}[5m]))
+            sum(rate(http_server_requests_seconds_sum{app="sosialhjelp-innsyn-api", uri!~"/internal/isAlive|/internal/isReady|/internal/prometheus|^/swagger.*|^root|^/webjars/.*", method="GET"}[5m]))
+            /
+            sum(rate(http_server_requests_seconds_count{app="sosialhjelp-innsyn-api", uri!~"|/internal/isAlive|/internal/isReady|/internal/prometheus|^/swagger.*|^root|^/webjars/.*", method="GET"}[5m])) > 2
           annotations:
             consequence: Brukere kan oppleve treg respons
           labels:
             severity: warning
             team: teamdigisos
+
+        - alert: innsyn-api-memory-usage-high
+          expr: container_memory_working_set_bytes{container="sosialhjelp-innsyn-api", namespace="teamdigisos"} > 3.5 * 1024 * 1024 * 1024
+          annotations:
+            consequence: Applikasjonen kan bli treg eller utilgjengelig
+          labels:
+            severity: warning
+            team: teamdigisos
+
 
     - name: digisos-prod-gcp-alerts
       rules:
