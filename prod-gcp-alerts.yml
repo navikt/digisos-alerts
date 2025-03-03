@@ -38,6 +38,17 @@ spec:
           labels:
             severity: danger
             team: teamdigisos
+
+        - alert: soknad-api-response-time-high
+          expr: |-
+            sum(rate(http_client_requests_seconds_sum{app="sosialhjelp-soknad-api"}[5m])) /
+            sum(rate(http_client_requests_seconds_count{app="sosialhjelp-soknad-api"}[5m]))
+          annotations:
+            consequence: Brukere kan oppleve treg respons
+          labels:
+            severity: warning
+            team: teamdigisos
+
     - name: digisos-innsyn-api-alerts
       rules:
         - alert: innsyn-api-low-ettersendelse-rate
@@ -47,6 +58,16 @@ spec:
             consequence: Brukere kan være forhindret fra å ettersende vedlegg
           labels:
             severity: danger
+            team: teamdigisos
+
+        - alert: innsyn-api-response-time-high
+          expr: |-
+            sum(rate(http_client_requests_seconds_sum{app="sosialhjelp-innsyn-api"}[5m])) /
+            sum(rate(http_client_requests_seconds_count{app="sosialhjelp-innsyn-api"}[5m]))
+          annotations:
+            consequence: Brukere kan oppleve treg respons
+          labels:
+            severity: warning
             team: teamdigisos
 
     - name: digisos-prod-gcp-alerts
