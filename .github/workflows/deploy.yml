@@ -8,6 +8,9 @@ jobs:
 
   deploy-dev-gcp-alerts:
     name: Deploy to dev-gcp
+    permissions:
+      id-token: write
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,6 +22,9 @@ jobs:
 
   deploy-prod-gcp:
     name: Deploy to prod-gcp
+    permissions:
+      id-token: write
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
