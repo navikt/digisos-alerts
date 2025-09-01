@@ -9,12 +9,13 @@ jobs:
   deploy-dev-gcp-alerts:
     name: Deploy to dev-gcp
     permissions:
+      actions: read
       id-token: write
-      contents: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
+      - uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
@@ -23,12 +24,13 @@ jobs:
   deploy-prod-gcp:
     name: Deploy to prod-gcp
     permissions:
+      actions: read
       id-token: write
-      contents: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
+      - uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
