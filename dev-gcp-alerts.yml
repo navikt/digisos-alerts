@@ -21,22 +21,15 @@ spec:
           labels:
             severity: danger
             team: teamdigisos
-        - alert: digisos-app-kontinuerlig-restart
-          expr: sum(increase(kube_pod_container_status_restarts_total{container=~"sosialhjelp-soknad-api-dev|sosialhjelp-soknad-dev|sosialhjelp-innsyn-api-dev|sosialhjelp-innsyn-dev"}[30m])) by (container) > 2
-          for: 5m
+        - alert: soknad-api-ingen-soknader_sendt
+          expr: |-
+            (
+              sum(increase(sendt_soknad_digisosapi_counter_total[5m]))=0
+              and
+              (hour() >= 7 and hour() < 21)
+            )
           annotations:
-            consequence: Applikasjon kan være ustabil
-            action: "Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs {{ $labels.container }}` for logger"
-            summary: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
+            consequence: Får ingen søknader fra brukere siste 5 minutter.
           labels:
-            namespace: teamdigisos
             severity: danger
-        - alert: høy feilrate i logger
-          expr: (100 * sum by (app, namespace) (rate(log_messages_errors{app=~"sosialhjelp-soknad-api-dev|sosialhjelp-soknad-dev|sosialhjelp-innsyn-api-dev|sosialhjelp-innsyn-dev", level="Error"}[10m]))) > 10
-          for: 3m
-          annotations:
-            consequence: Applikasjon kan være ustabil
-            action: "Sjekk loggene til app {{ $labels.app }} for å se hvorfor det er så mye feil"
-            summary: "Høy feilrate i logger på app {{ $labels.app }}"
-          labels:
-            namespace: teamdigisos
+            team: teamdigisos

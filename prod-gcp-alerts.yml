@@ -21,3 +21,29 @@ spec:
           labels:
             severity: danger
             team: teamdigisos
+        - name: digisos-soknad-api-alerts
+          rules:
+            - alert: soknad-api-ingen-soknader
+              expr: |-
+                (
+                  sum(increase(start_soknad_counter_total[5m]))=0
+                  and
+                  (hour() >= 7 and hour() < 21)
+                )
+              annotations:
+                consequence: Får ingen søknader fra brukere siste 5 minutter.
+              labels:
+                severity: danger
+                team: teamdigisos
+            - alert: soknad-api-ingen-soknader_sendt
+              expr: |-
+                (
+                  sum(increase(sendt_soknad_digisosapi_counter_total[5m]))=0
+                  and
+                  (hour() >= 7 and hour() < 21)
+                )
+              annotations:
+                consequence: Får ingen søknader fra brukere siste 5 minutter.
+              labels:
+                severity: danger
+                team: teamdigisos
