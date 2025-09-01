@@ -9,16 +9,18 @@ spec:
   groups:
     - name: digisos-dev-gcp-alerts
       rules:
-        - alert: digisos-app-nede
-          expr: kube_deployment_status_replicas_available{deployment=~"sosialhjelp-soknad-api-dev|sosialhjelp-soknad-dev|sosialhjelp-innsyn-api-dev|sosialhjelp-innsyn-dev"} == 0
-          for: 2m
+        - alert: soknad-api-ingen-soknader
+          expr: |-
+            (
+              sum(increase(start_soknad_counter_total[5m]))=0
+              and
+              (hour() >= 8 and hour() < 21)
+            )
           annotations:
-            consequence: Applikasjon er utilgjengelig
-            action: "Se `kubectl describe pod {{ $labels.pod }}` for events, og `kubectl logs {{ $labels.pod }}` for logger"
-            summary: "{{ $labels.deployment }} er nede i dev-gcp"
+            consequence: Får ingen søknader fra brukere siste 5 minutter.
           labels:
-            namespace: teamdigisos
             severity: danger
+            team: teamdigisos
         - alert: digisos-app-kontinuerlig-restart
           expr: sum(increase(kube_pod_container_status_restarts_total{container=~"sosialhjelp-soknad-api-dev|sosialhjelp-soknad-dev|sosialhjelp-innsyn-api-dev|sosialhjelp-innsyn-dev"}[30m])) by (container) > 2
           for: 5m
