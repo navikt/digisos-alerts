@@ -4,7 +4,7 @@ metadata:
   name: digisos-alerts
   namespace: teamdigisos
   labels:
-    team: teamdigisos
+    namespace: teamdigisos
 spec:
   groups:
     - name: digisos-dev-gcp-alerts
@@ -20,7 +20,7 @@ spec:
             consequence: Får ingen søknader fra brukere siste 5 minutter.
           labels:
             severity: danger
-            team: teamdigisos
+            namespace: teamdigisos
         - alert: soknad-api-ingen-soknader_sendt
           expr: |-
             (
@@ -32,4 +32,4 @@ spec:
             consequence: Får ingen søknader fra brukere siste 5 minutter.
           labels:
             severity: danger
-            team: teamdigisos
+            namespace: teamdigisos
