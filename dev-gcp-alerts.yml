@@ -14,7 +14,7 @@ spec:
             (
               sum(increase(start_soknad_counter_total[10m])) == 0
               and
-              (hour() >= 8 and hour() < 21)
+              (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
             )
           annotations:
             consequence: Får ingen søknader fra brukere siste 10 minutter.
@@ -26,7 +26,7 @@ spec:
             (
                 sum(increase(sendt_soknad_digisosapi_counter_total[10m])) == 0
                 and
-                (hour() >= 7 and hour() < 21)
+                (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
               )
           annotations:
             consequence: Får ingen søknader fra brukere siste 10 minutter.
