@@ -34,7 +34,7 @@ spec:
             severity: danger
             namespace: teamdigisos
 #        - alert: soknad-api-gamle-soknader-status-sendt
-#          expr: antall_gamle_soknader_status_sendt > 0
+#          expr: sum(antall_gamle_soknader_status_sendt) > 0
 #          for: 3h
 #          annotations:
 #            summary: Det finnes søknader med status sendt som er eldre en x antall dager.
