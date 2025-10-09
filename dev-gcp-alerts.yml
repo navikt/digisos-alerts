@@ -24,7 +24,7 @@ spec:
         - alert: soknad-api-ingen-soknader_sendt
           expr: |-
             (
-                sum(increase(sendt_soknad_digisos-api_counter_total[10m])) == 0
+                sum(increase(sendte_soknader_digisos-api_counter_total[10m])) == 0
                 and
                 (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
               )
