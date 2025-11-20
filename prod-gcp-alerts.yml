@@ -1,47 +1,26 @@
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  name: digisos-alerts
-  namespace: teamdigisos
-  labels:
-    namespace: teamdigisos
-spec:
-  groups:
-    - name: digisos-soknad-api-alerts
-      rules:
-        - alert: soknad-api-ingen-soknader
-          expr: >-
-            (
-              sum(increase(start_soknad_counter_total[10m])) == 0
-              and
-              (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
-            )
-          annotations:
-            consequence: Får ingen søknader fra brukere siste 10 minutter.
-          labels:
-            severity: danger
-            namespace: teamdigisos
-        - alert: soknad-api-ingen-soknader_sendt
-          expr: >-
-            (
-                sum(increase(sendte_soknader_digisos-api_counter_total[10m])) == 0
-                and
-                (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
-              )
-          annotations:
-            consequence: Får ingen søknader fra brukere siste 10 minutter.
-          labels:
-            severity: danger
-            namespace: teamdigisos
-    - name: digisos-innsyn-api-alerts
-      rules:
-        - alert: innsyn-api-høyt-antall-feilkoder
-          expr: >-
-            sum(increase(http_server_requests_seconds_count{app="sosialhjelp-innsyn-api", namespace="teamdigisos", status!~"200|202|204|302", uri!~"^/internal/.*|^/swagger.*|^root|^/webjars/.*"}[24h]) or vector(0)) > 250
-                          and
-                          (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
-          annotations:
-            consequence: Over 250 feilkoder (!(2XX|3XX)) siste 10 minutter.
-          labels:
-            severity: danger
-            namespace: teamdigisos
+groups:
+  - name: digisos-soknad-api-alerts
+    rules:
+      - alert: soknad-api-ingen-soknader
+        expr: sum(increase(start_soknad_counter_total{}[10m])) == 0 and (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
+        annotations:
+          consequence: Får ingen søknader fra brukere siste 10 minutter.
+        labels:
+          severity: danger
+          namespace: teamdigisos
+      - alert: soknad-api-ingen-soknader_sendt
+        expr: sum(increase(sendte_soknader_digisos_api_counter_total{}[10m])) == 0 and (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
+        annotations:
+          consequence: Får ingen søknader fra brukere siste 10 minutter.
+        labels:
+          severity: danger
+          namespace: teamdigisos
+  - name: digisos-innsyn-api-alerts
+    rules:
+      - alert: innsyn-api-høyt-antall-feilkoder
+        expr: sum(increase(http_server_requests_seconds_count{app="sosialhjelp-innsyn-api", namespace="teamdigisos", status!~"200|202|204|302", uri!~"^/internal/.*|^/swagger.*|^root|^/webjars/.*"}[10m])) > 250 and (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 8 and hour() < 21)
+        annotations:
+          consequence: Over 250 feilkoder (!(2XX|3XX)) siste 10 minutter.
+        labels:
+          severity: danger
+          namespace: teamdigisos
