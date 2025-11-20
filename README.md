@@ -14,7 +14,7 @@ Man kan bruke `https://prometheus.nais.preprod.local/graph` som hjelp til å tes
 Bruk `dev-<fss/gcp>-alerts.yml` til å teste alerts i et dev-cluster. De vil da alerts dukke opp i `#digisos-alerts-dev`.
 
 ## Autodeploy
-Det er satt opp autodeploy av alle alerts ved push på master.
+Det er satt opp autodeploy av alle alerts ved push på main.
 
 ### Manuell apply i dev:
 `kubectl apply -f dev-<fss/gcp>-alerts.yml`

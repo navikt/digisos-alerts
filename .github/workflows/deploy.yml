@@ -2,10 +2,9 @@ name: Deploy alerts
 on:
   push:
     branches:
-      - "master"
+      - "main"
 
 jobs:
-
   deploy-dev-gcp-alerts:
     name: Deploy to dev-gcp
     permissions:
