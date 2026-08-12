@@ -38,7 +38,7 @@ spec:
       rules:
         - alert: CriticalVulnerability
           expr: nais_workload_vulnerabilities{severity="CRITICAL", workload_namespace="teamdigisos"} > 0
-          for: 10m
+          for: 48h
           annotations:
             summary: "Critical vulnerability detected in {{ $labels.workload_name }}"
             consequence: "The workload is running with one or more critical vulnerabilities."
