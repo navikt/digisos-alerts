@@ -36,7 +36,7 @@ spec:
     - name: digisos-modia-api-alerts
       rules:
         - alert: modia-api-ingen-oppslag
-          expr: sum(increase(http_server_requests_seconds_count{app="sosialhjelp-modia-api", namespace="teamdigisos", uri="/api/personinfo", method="POST"}[15m])) == 0 and (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 6 and hour() < 15)
+          expr: (sum(increase(http_server_requests_seconds_count{app="sosialhjelp-modia-api", namespace="teamdigisos", uri="/api/personinfo", method="POST"}[15m])) or vector(0)) == 0 and (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 6 and hour() < 15)
           annotations:
             consequence: Ingen brukeroppslag (POST /api/personinfo) i Modia sosialhjelp siste 15 minutter i normal aktivitetsperiode (ca. 08-16 norsk tid, hour()-grensene er satt i UTC 06-15 og dekker både sommer- og vintertid) på hverdag. Kan indikere at Modia er nede for veiledere (jf. hendelsen 15.05).
           labels:
