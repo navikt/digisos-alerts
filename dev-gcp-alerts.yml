@@ -42,7 +42,20 @@ spec:
           labels:
             severity: danger
             namespace: teamdigisos
-
+    - name: digisos-modia-api-alerts
+      rules:
+        - alert: modia-api-ingen-oppslag
+          expr: |-
+            (
+              (sum(increase(http_server_requests_seconds_count{app="sosialhjelp-modia-api", namespace="teamdigisos", uri="/api/personinfo", method="POST"}[15m])) or vector(0)) == 0
+              and
+              (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 6 and hour() < 15)
+            )
+          annotations:
+            consequence: Ingen brukeroppslag i Modia sosialhjelp siste 15 minutter
+          labels:
+            severity: danger
+            namespace: teamdigisos
     - name: vulnerability-alerts
       rules:
         - alert: CriticalVulnerability
