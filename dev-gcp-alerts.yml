@@ -52,7 +52,7 @@ spec:
               (day_of_week() >= 1 and day_of_week() <= 5 and hour() >= 6 and hour() < 15)
             )
           annotations:
-            consequence: Ingen brukeroppslag (POST /api/personinfo) i Modia sosialhjelp siste 15 minutter i normal aktivitetsperiode (ca. 08-16 norsk tid, hour()-grensene er satt i UTC 06-15 og dekker både sommer- og vintertid) på hverdag. Kan indikere at Modia er nede for veiledere (jf. hendelsen 15.05).
+            consequence: Ingen brukeroppslag i Modia sosialhjelp siste 15 minutter
           labels:
             severity: danger
             namespace: teamdigisos
