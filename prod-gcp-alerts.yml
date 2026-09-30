@@ -33,6 +33,53 @@ spec:
           labels:
             severity: danger
             namespace: teamdigisos
+    - name: digisos-modia-api-alerts
+      rules:
+        # Skal kun varsle man–fre 09:00–15:00 norsk tid (Europe/Oslo).
+        #
+        # NB: hour(), day_of_week() og month() i PromQL er ALLTID UTC. En fast
+        # "hour() >= 9 and hour() < 15" gir derfor 11:00–17:00 om sommeren.
+        # Uttrykket under regner ut sommertid (EU-regel) selv:
+        #   - Sommertid (CEST, UTC+2): siste søndag i mars → siste søndag i oktober
+        #     → 09–15 lokal = 07–13 UTC
+        #   - Vintertid (CET, UTC+1): resten av året → 09–15 lokal = 08–14 UTC
+        #   - day_of_month() - day_of_week() = datoen til siste søndag. Er den >= 25
+        #     i mars/oktober, har siste søndag i måneden passert.
+        # Skiftet skjer alltid en søndag, som uansett er utenfor vinduet.
+        # Ikke forenkle til en fast UTC-time. Helligdager er ikke dekket.
+        # Når AlertmanagerConfig-CRD-en støtter `location` (prometheus-operator
+        # PR #7817), kan dette erstattes med time intervals i Europe/Oslo.
+        - alert: modia-api-ingen-oppslag
+          expr: |
+            (
+              sum(increase(http_server_requests_seconds_count{app="sosialhjelp-modia-api", namespace="teamdigisos", uri="/api/personinfo", method="POST"}[10m])) or vector(0)
+            ) == 0
+            and on() day_of_week() >= 1 <= 5
+            and on() (
+              (
+                (
+                  month() >= 4 < 10
+                  or (month() == 3 and day_of_month() - day_of_week() >= 25)
+                  or (month() == 10 and day_of_month() - day_of_week() < 25)
+                )
+                and hour() >= 7 < 13
+              )
+              or
+              (
+                (
+                  month() <= 2 or month() >= 11
+                  or (month() == 3 and day_of_month() - day_of_week() < 25)
+                  or (month() == 10 and day_of_month() - day_of_week() >= 25)
+                )
+                and hour() >= 8 < 14
+              )
+            )
+          for: 5m
+          annotations:
+            consequence: Ingen brukeroppslag i Modia sosialhjelp siste 10 minutter
+          labels:
+            severity: danger
+            namespace: teamdigisos
 
 #    - name: vulnerability-alerts
 #      rules:
