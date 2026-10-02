@@ -43,6 +43,38 @@ spec:
             severity: danger
             namespace: teamdigisos
 
+    - name: digisos-wonderwall-alerts
+      rules:
+        # Ingen tidsvindu: innlogging må fungere også kveld og helg.
+        - alert: wonderwall-ingen-friske-pods
+          expr: sum by (deployment) (kube_deployment_status_replicas_available{namespace="teamdigisos", deployment=~"sosialhjelp-wonderwall|wonderwall-soknad|wonderwall-innsyn"}) < 1
+          for: 5m
+          annotations:
+            consequence: "{{ $labels.deployment }} har ingen friske pods. Brukere kan ikke logge inn."
+            action: "Sjekk pods og logger for {{ $labels.deployment }} i Nais Console. Ved feil etter utrulling: sett forrige digest i manifestet og redeploy."
+          labels:
+            severity: danger
+            namespace: teamdigisos
+        # Telles på ingress, så 5xx fra appen bak wonderwall (soknad/innsyn) teller også.
+        # Fanger ikke innloggingsfeil som gir 4xx. Minst 20 forespørsler for å unngå
+        # utslag ved lav trafikk. Terskelen (5 %) er et første anslag.
+        - alert: wonderwall-hoy-andel-5xx
+          expr: |
+            (
+              sum by (service) (increase(nginx_ingress_controller_requests{namespace="teamdigisos", service=~"sosialhjelp-wonderwall|wonderwall-soknad|wonderwall-innsyn", status=~"5.."}[5m]))
+              /
+              sum by (service) (increase(nginx_ingress_controller_requests{namespace="teamdigisos", service=~"sosialhjelp-wonderwall|wonderwall-soknad|wonderwall-innsyn"}[5m]))
+            ) > 0.05
+            and
+            sum by (service) (increase(nginx_ingress_controller_requests{namespace="teamdigisos", service=~"sosialhjelp-wonderwall|wonderwall-soknad|wonderwall-innsyn"}[5m])) > 20
+          for: 5m
+          annotations:
+            consequence: "Over 5 % av forespørslene til {{ $labels.service }} gir 5xx siste 5 minutter. Brukere kan ikke logge inn eller bruke tjenesten."
+            action: "Sjekk logger for {{ $labels.service }} og appen bak i Nais Console."
+          labels:
+            severity: danger
+            namespace: teamdigisos
+
     - name: vulnerability-alerts
       rules:
         - alert: CriticalVulnerability
