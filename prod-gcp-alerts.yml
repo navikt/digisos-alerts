@@ -85,7 +85,12 @@ spec:
       rules:
         # Ingen tidsvindu: innlogging må fungere også kveld og helg.
         - alert: wonderwall-ingen-friske-pods
-          expr: sum by (deployment) (kube_deployment_status_replicas_available{namespace="teamdigisos", deployment=~"sosialhjelp-wonderwall|wonderwall-soknad|wonderwall-innsyn"}) < 1
+          # absent(): fyrer også hvis en deployment (og dermed metrikken) er helt borte.
+          expr: |
+            sum by (deployment) (kube_deployment_status_replicas_available{namespace="teamdigisos", deployment=~"sosialhjelp-wonderwall|wonderwall-soknad|wonderwall-innsyn"}) < 1
+            or absent(kube_deployment_status_replicas_available{namespace="teamdigisos", deployment="sosialhjelp-wonderwall"})
+            or absent(kube_deployment_status_replicas_available{namespace="teamdigisos", deployment="wonderwall-soknad"})
+            or absent(kube_deployment_status_replicas_available{namespace="teamdigisos", deployment="wonderwall-innsyn"})
           for: 5m
           annotations:
             consequence: "{{ $labels.deployment }} har ingen friske pods. Brukere kan ikke logge inn."
